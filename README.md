@@ -1,7 +1,9 @@
 # caps
 
-[UML](Lab12.jpg)
+[UML](Lab13UML.jpg)
 
 # App Description
 
-We're creating a real-time delivery service for our lab project. It allows vendors to notify the system of pending packages, drivers to see their pickup queue, and vendors to track delivery status. Our focus is on building a functional prototype to showcase the practical applications of real-time communication technology.
+In this phase, we are going to implement a system to guarantee that notification payloads are read by their intended subscriber. Rather than just triggering an event notification and hope that client applications respond, we're going to implement a "Queue" system so that nothing gets lost. Every event sent will be logged and held onto by the server until the intended recipient acknowledges that they received the message. At any time, a subscriber can get all of the messages they might have missed.
+
+In this final phase, we'll be implementing a "Queue" feature on the Server, allowing Driver and Vendor clients to subscribe to messages added to pickup and delivered queues.
