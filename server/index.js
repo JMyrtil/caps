@@ -1,30 +1,21 @@
 require('dotenv').config();
-const { Server } = require('socket.io');
-const PORT = process.env.PORT || 3001;
-const server = new Server(PORT, {
-  cors: {
-    origin: '*',
-  },
+const express = require('express');
+const app = express();
+const { EventEmitter } = require('events');
+const Queue = require('./lib/queue');
+const events = require('../eventPool');
+
+const port = process.env.PORT || 3001;
+
+const eventEmitter = new EventEmitter();
+const queue = new Queue(eventEmitter);
+
+events(eventEmitter, queue);
+
+app.get('/', (req, res) => {
+  res.send('Server is running');
 });
 
-const caps = server.of('/caps');
-
-caps.on('connection', socket => {
-  console.log(`Client ${socket.id} has connected`);
-  
-  socket.on('join', room => {
-    console.log(`${socket.id} is joining ${room}`);
-    socket.join(room);
-  });
-
-  socket.on('disconnect', () => {
-    console.log(`Client ${socket.id} has disconnected`);
-  });
+app.listen(port, () => {
+  console.log(`Server listening on port ${port}`);
 });
-
-const start = () => {
-  server.listen(PORT);
-  console.log(`listening on ${PORT}`);
-};
-
-start();

@@ -1,12 +1,19 @@
-const eventPool = require('../../eventPool');
+'use strict';
 
-function pickup(payload) {
-  console.log(`picking up ${payload.orderId}`);
-  eventPool.emit('in-transit', { event: 'in-transit', time: new Date(), payload });
-  setTimeout(() => {
-    console.log(`delivered ${payload.orderId}`);
-    eventPool.emit('delivered', { event: 'delivered', time: new Date(), payload });
-  }, 10000);
-}
+const events = require('../../server/lib/events');
 
-module.exports = { pickup };
+const driver = {
+  pickup(payload) {
+    console.log(`DRIVER: picked up order ${payload.orderId}`);
+    events.emit('in-transit', payload);
+  },
+  inTransit(payload) {
+    console.log(`DRIVER: delivered order ${payload.orderId}`);
+    events.emit('delivered', payload);
+  },
+};
+
+events.on('pickup', driver.pickup);
+events.on('in-transit', driver.inTransit);
+
+module.exports = driver;
